@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <!-- 모바일에서도 화면 크기에 맞게 보이도록 하는 설정 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>마트어택맵 🛒 — 여행지 마트 필수템 체크리스트</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ===== 상단 헤더 ===== -->
+  <header class="header">
+    <h1 class="logo">🛒 마트어택맵</h1>
+    <p class="tagline">여행지 마트에서 구경만 하다 나오지 마세요.<br />현지인 추천 필수템만 골라 담는 체크리스트!</p>
+  </header>
+
+  <main class="container">
+
+    <!-- ===== 검색 영역: 도시 이름을 입력하는 곳 ===== -->
+    <section class="search-box">
+      <form id="search-form">
+        <input
+          type="text"
+          id="city-input"
+          placeholder="여행지 입력 (예: 도쿄, 방콕, 파리…)"
+          autocomplete="off"
+        />
+        <button type="submit">어택! 🎯</button>
+      </form>
+
+      <!-- 지원하는 도시를 버튼(칩)으로 보여줘서 클릭만으로도 이동 가능 -->
+      <div id="city-chips" class="chips"></div>
+    </section>
+
+    <!-- ===== 결과 영역: 자바스크립트가 여기에 리스트를 그려 넣음 ===== -->
+    <section id="result" class="result"></section>
+
+  </main>
+
+  <footer class="footer">
+    <p>💡 체크한 항목은 이 브라우저에 자동 저장됩니다. 마트에서 켜고 하나씩 겟하세요!</p>
+  </footer>
+
+  <!-- 데이터 파일을 먼저 불러온 뒤, 앱 로직을 불러옵니다 (순서 중요!) -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
