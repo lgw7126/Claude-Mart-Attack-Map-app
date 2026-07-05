@@ -1,7 +1,11 @@
 # 🛒 마트어택맵 (Mart Attack Map)
 
+### 👉 [앱 바로 실행하기](https://lgw7126.github.io/Claude-Mart-Attack-Map-app/) 👈
+
 > 여행지 마트에서 구경만 하다 나오지 마세요.
 > 도시를 입력하면 **현지인 추천 마트 필수템 Top 10**을 보여주고, 산 것을 하나씩 체크할 수 있는 웹앱입니다.
+
+<sub>⚙️ 위 링크가 404라면 GitHub Pages를 한 번만 켜주세요: 저장소 **Settings → Pages → Branch를 `main`으로 선택 → Save** (1~2분 뒤 접속 가능)</sub>
 
 ## 🎯 해결하는 불편
 
