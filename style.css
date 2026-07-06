@@ -46,12 +46,75 @@ body {
   padding: 0 16px 40px;
 }
 
+/* --- 내 정보(프로필) 카드 --- */
+.profile-box {
+  margin-top: -20px; /* 헤더와 살짝 겹치게 해서 카드 느낌 */
+}
+
+.profile-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff;
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.profile-emoji {
+  font-size: 1.6rem;
+}
+
+.profile-card input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  font-size: 0.95rem;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  outline: none;
+}
+
+.profile-card input:focus {
+  border-color: #ff6b35;
+}
+
+.profile-card button {
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #fff;
+  background: #ff6b35;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.profile-info {
+  flex: 1;
+  font-size: 0.95rem;
+}
+
+.profile-stats {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* 닉네임 수정(연필) 버튼은 투명하게 */
+#nickname-edit {
+  background: transparent;
+  font-size: 1rem;
+  padding: 6px;
+}
+
 /* --- 검색 박스 --- */
 .search-box {
   background: #fff;
   border-radius: 16px;
   padding: 20px;
-  margin-top: -20px; /* 헤더와 살짝 겹치게 해서 카드 느낌 */
+  margin-top: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
@@ -89,12 +152,23 @@ body {
   background: #e85a26;
 }
 
-/* --- 도시 칩 버튼들 --- */
+/* --- 도시 칩 버튼들 (지역별 그룹) --- */
 .chips {
+  margin-top: 6px;
+}
+
+.region-label {
+  margin-top: 12px;
+  margin-bottom: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #9ca3af;
+}
+
+.chip-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 14px;
 }
 
 .chip {
