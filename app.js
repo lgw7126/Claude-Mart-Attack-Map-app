@@ -14,6 +14,7 @@ const searchForm = document.getElementById("search-form");
 const cityInput = document.getElementById("city-input");
 const cityChips = document.getElementById("city-chips");
 const resultEl = document.getElementById("result");
+const profileEl = document.getElementById("profile");
 
 // 현재 보고 있는 도시 (아직 없으면 null)
 let currentCity = null;
@@ -36,6 +37,84 @@ function loadChecked(cityId) {
 // 체크된 항목 번호 배열을 저장하기
 function saveChecked(cityId, checkedIndexes) {
   localStorage.setItem(storageKey(cityId), JSON.stringify(checkedIndexes));
+}
+
+// ============================================================
+// [내 정보] 프로필 저장/불러오기
+//   - 키: "mart-attack:profile" → 값: { name: "닉네임" }
+//   - 체크 기록과 마찬가지로 이 브라우저에만 저장됩니다
+// ============================================================
+
+function loadProfile() {
+  const saved = localStorage.getItem("mart-attack:profile");
+  return saved ? JSON.parse(saved) : null;
+}
+
+function saveProfile(profile) {
+  localStorage.setItem("mart-attack:profile", JSON.stringify(profile));
+}
+
+// 모든 도시의 체크 기록을 합산해서 "나의 어택 통계"를 계산
+function getMyStats() {
+  let totalChecked = 0;   // 지금까지 겟한 아이템 수
+  let conquered = 0;      // 10개를 모두 겟한(정복한) 도시 수
+
+  CITY_DATA.forEach(function (city) {
+    const checked = loadChecked(city.id);
+    totalChecked += checked.length;
+    if (checked.length === city.items.length) conquered += 1;
+  });
+
+  return { totalChecked: totalChecked, conquered: conquered };
+}
+
+// 프로필 영역 그리기: 닉네임이 없으면 입력폼, 있으면 인사말+통계
+function renderProfile() {
+  const profile = loadProfile();
+
+  if (!profile || !profile.name) {
+    // 아직 닉네임이 없을 때: 입력폼 표시
+    profileEl.innerHTML = `
+      <div class="profile-card">
+        <span class="profile-emoji">👤</span>
+        <input type="text" id="nickname-input" placeholder="닉네임을 저장해보세요!" maxlength="12" />
+        <button type="button" id="nickname-save">저장</button>
+      </div>
+    `;
+    document.getElementById("nickname-save").addEventListener("click", submitNickname);
+    document.getElementById("nickname-input").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") submitNickname();
+    });
+  } else {
+    // 닉네임이 있을 때: 인사말 + 나의 어택 통계
+    const stats = getMyStats();
+    profileEl.innerHTML = `
+      <div class="profile-card">
+        <span class="profile-emoji">🧑‍✈️</span>
+        <div class="profile-info">
+          <strong>${escapeHtml(profile.name)}</strong>님의 마트어택
+          <span class="profile-stats">🎯 총 ${stats.totalChecked}개 겟 · 🏆 정복한 도시 ${stats.conquered}곳</span>
+        </div>
+        <button type="button" id="nickname-edit" title="닉네임 수정">✏️</button>
+      </div>
+    `;
+    document.getElementById("nickname-edit").addEventListener("click", function () {
+      saveProfile({ name: "" }); // 이름을 비우면 입력폼으로 돌아감
+      renderProfile();
+    });
+  }
+}
+
+// 닉네임 입력폼에서 저장 버튼을 눌렀을 때
+function submitNickname() {
+  const input = document.getElementById("nickname-input");
+  const name = input.value.trim();
+  if (!name) {
+    input.focus();
+    return;
+  }
+  saveProfile({ name: name });
+  renderProfile();
 }
 
 // ============================================================
@@ -125,7 +204,8 @@ function renderCity(city) {
   document.getElementById("reset-btn").addEventListener("click", function () {
     if (confirm(city.name + "의 체크를 모두 지울까요?")) {
       saveChecked(city.id, []);
-      renderCity(city); // 다시 그려서 화면 갱신
+      renderCity(city);    // 다시 그려서 화면 갱신
+      renderProfile();     // 통계도 갱신
     }
   });
 }
@@ -144,6 +224,7 @@ function toggleItem(index, isChecked) {
 
   saveChecked(currentCity.id, checked);
   renderCity(currentCity);
+  renderProfile(); // 체크할 때마다 "나의 어택 통계"도 갱신
 }
 
 // ============================================================
@@ -174,17 +255,38 @@ function escapeHtml(text) {
 // [초기 설정] 도시 칩 버튼 만들기 + 검색 이벤트 연결
 // ============================================================
 
-// 지원 도시들을 칩 버튼으로 표시
+// 지원 도시들을 "지역별로 묶어서" 칩 버튼으로 표시
+// 1) 도시들을 region 값 기준으로 그룹화한 뒤
+// 2) 지역 이름 + 그 지역의 도시 칩들을 순서대로 그린다
+const regions = [];
 CITY_DATA.forEach(function (city) {
-  const chip = document.createElement("button");
-  chip.type = "button";
-  chip.className = "chip";
-  chip.textContent = city.name;
-  chip.addEventListener("click", function () {
-    cityInput.value = city.name;
-    selectCity(city);
+  if (!regions.includes(city.region)) regions.push(city.region);
+});
+
+regions.forEach(function (region) {
+  // 지역 이름 라벨
+  const label = document.createElement("div");
+  label.className = "region-label";
+  label.textContent = region;
+  cityChips.appendChild(label);
+
+  // 그 지역에 속한 도시 칩들
+  const row = document.createElement("div");
+  row.className = "chip-row";
+  CITY_DATA.filter(function (city) {
+    return city.region === region;
+  }).forEach(function (city) {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "chip";
+    chip.textContent = city.name;
+    chip.addEventListener("click", function () {
+      cityInput.value = city.name;
+      selectCity(city);
+    });
+    row.appendChild(chip);
   });
-  cityChips.appendChild(chip);
+  cityChips.appendChild(row);
 });
 
 // 칩 활성화 표시 + 렌더링을 한 번에
@@ -213,6 +315,9 @@ searchForm.addEventListener("submit", function (event) {
     });
   }
 });
+
+// 첫 화면: 프로필 영역 그리기
+renderProfile();
 
 // 첫 화면 안내 메시지
 resultEl.innerHTML = `
