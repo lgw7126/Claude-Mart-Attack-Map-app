@@ -1,0 +1,14 @@
+{
+  "name": "마트어택맵",
+  "short_name": "마트어택맵",
+  "description": "여행지 마트 필수템 체크리스트",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f5f2",
+  "theme_color": "#ff6b35",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
