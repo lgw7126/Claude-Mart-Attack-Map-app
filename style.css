@@ -410,6 +410,118 @@ body {
   border-radius: 14px;
 }
 
+/* --- 공유 버튼 --- */
+/* 초록 배너 등 색이 있는 배경 위 (반투명 흰색) */
+.share-btn {
+  display: block;
+  margin: 10px auto 0;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+/* 흰 배경 카드 위 (주황 계열) */
+.share-btn-outline {
+  margin-top: 12px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #d14a12;
+  background: #fff3ec;
+  border: 1px solid #ffd9c4;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+/* --- 어택 버튼 팡파레 이모지 파티클 --- */
+.confetti-particle {
+  position: fixed;
+  left: 0;
+  top: 0;
+  font-size: 1.5rem;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  animation: confetti-pop 0.7s ease-out forwards;
+}
+
+@keyframes confetti-pop {
+  0% {
+    transform: translate(-50%, -50%) scale(0.4) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.15) rotate(var(--rot));
+    opacity: 0;
+  }
+}
+
+/* --- 내가 추가한 아이템 섹션 --- */
+.custom-section {
+  margin-top: 20px;
+}
+
+.custom-heading {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.custom-delete {
+  background: transparent;
+  color: #ef4444;
+  font-size: 1rem;
+  padding: 4px 8px;
+  border: none;
+  cursor: pointer;
+  align-self: flex-start;
+}
+
+.custom-add-form {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.custom-add-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  border: 2px dashed #d1d5db;
+  border-radius: 10px;
+  outline: none;
+}
+
+.custom-add-form input:focus {
+  border-color: #ff6b35;
+}
+
+.custom-add-form button {
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #ff6b35;
+  background: #fff3ec;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* 내 기록 페이지에서 "직접 추가" 아이템 표시 태그 */
+.custom-tag {
+  font-size: 0.72rem;
+  color: #9ca3af;
+  font-weight: 400;
+}
+
 /* --- 푸터 --- */
 .footer {
   text-align: center;
