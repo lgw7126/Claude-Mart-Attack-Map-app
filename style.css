@@ -93,6 +93,13 @@ body {
 .profile-info {
   flex: 1;
   font-size: 0.95rem;
+  cursor: pointer; /* 누르면 내 기록 페이지로 이동 */
+}
+
+#mypage-btn {
+  white-space: nowrap;
+  font-size: 0.8rem;
+  padding: 8px 10px;
 }
 
 .profile-stats {
@@ -315,6 +322,62 @@ body {
 
 .item-card.done .item-title {
   text-decoration: line-through;
+}
+
+/* --- 내 기록 페이지: 도시별 기록 카드 --- */
+.mypage-city {
+  background: #fff;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-top: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.mypage-city:active {
+  transform: scale(0.98);
+}
+
+.mypage-city-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+}
+
+/* 진행 중 / 정복 완료 배지 */
+.badge-ing {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #d14a12;
+  background: #fff3ec;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.badge-done {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #16a34a;
+  background: #ecfdf3;
+  padding: 4px 10px;
+  border-radius: 999px;
+}
+
+.mypage-items {
+  list-style: none;
+  margin-top: 10px;
+  font-size: 0.88rem;
+  color: #374151;
+  line-height: 1.9;
+}
+
+.mypage-open {
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  text-align: right;
 }
 
 /* --- 전체 초기화 버튼 --- */

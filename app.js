@@ -86,23 +86,104 @@ function renderProfile() {
       if (e.key === "Enter") submitNickname();
     });
   } else {
-    // 닉네임이 있을 때: 인사말 + 나의 어택 통계
+    // 닉네임이 있을 때: 인사말 + 나의 어택 통계 + 내 기록 버튼
     const stats = getMyStats();
     profileEl.innerHTML = `
       <div class="profile-card">
         <span class="profile-emoji">🧑‍✈️</span>
-        <div class="profile-info">
+        <div class="profile-info" id="profile-open" title="내 기록 보기">
           <strong>${escapeHtml(profile.name)}</strong>님의 마트어택
           <span class="profile-stats">🎯 총 ${stats.totalChecked}개 겟 · 🏆 정복한 도시 ${stats.conquered}곳</span>
         </div>
+        <button type="button" id="mypage-btn">📋 내 기록</button>
         <button type="button" id="nickname-edit" title="닉네임 수정">✏️</button>
       </div>
     `;
+    // "내 기록" 버튼 또는 이름 부분을 누르면 내 기록 페이지로
+    document.getElementById("mypage-btn").addEventListener("click", renderMyPage);
+    document.getElementById("profile-open").addEventListener("click", renderMyPage);
     document.getElementById("nickname-edit").addEventListener("click", function () {
       saveProfile({ name: "" }); // 이름을 비우면 입력폼으로 돌아감
       renderProfile();
     });
   }
+}
+
+// ============================================================
+// [내 기록 페이지] 체크한 도시들과 체크리스트를 한 화면에 모아보기
+// ============================================================
+
+function renderMyPage() {
+  const profile = loadProfile();
+  const name = profile && profile.name ? profile.name : "여행자";
+  const stats = getMyStats();
+
+  // 도시 화면이 아니므로 칩 강조 해제
+  currentCity = null;
+  cityChips.querySelectorAll(".chip").forEach(function (chip) {
+    chip.classList.remove("active");
+  });
+
+  // 체크한 아이템이 1개 이상 있는 도시만 골라내기
+  const visitedCities = CITY_DATA.filter(function (city) {
+    return loadChecked(city.id).length > 0;
+  });
+
+  let html = `
+    <div class="city-header">
+      <h2>📋 ${escapeHtml(name)}님의 어택 기록</h2>
+      <p class="marts">🎯 총 ${stats.totalChecked}개 겟 · 🏆 정복한 도시 ${stats.conquered}곳 / ${CITY_DATA.length}곳</p>
+    </div>
+  `;
+
+  if (visitedCities.length === 0) {
+    // 아직 아무것도 체크 안 했을 때
+    html += `
+      <div class="notice" style="margin-top: 16px">
+        <p>아직 체크한 아이템이 없어요. 🛒</p>
+        <p>도시를 골라 <strong>첫 아이템을 겟</strong>해보세요!</p>
+      </div>
+    `;
+  } else {
+    // 도시별 카드: 진행 상황 + 겟한 아이템 목록
+    visitedCities.forEach(function (city) {
+      const checked = loadChecked(city.id);
+      const isDone = checked.length === city.items.length;
+
+      let itemsHtml = "";
+      city.items.forEach(function (item, index) {
+        if (checked.includes(index)) {
+          itemsHtml += `<li>✅ ${item.emoji} ${item.name}</li>`;
+        }
+      });
+
+      html += `
+        <div class="mypage-city" data-city="${city.id}">
+          <div class="mypage-city-head">
+            <strong>${city.country} ${city.name}</strong>
+            <span class="${isDone ? "badge-done" : "badge-ing"}">
+              ${isDone ? "🏆 정복 완료!" : "✅ " + checked.length + " / " + city.items.length}
+            </span>
+          </div>
+          <ul class="mypage-items">${itemsHtml}</ul>
+          <p class="mypage-open">누르면 ${city.name} 체크리스트로 이동 →</p>
+        </div>
+      `;
+    });
+  }
+
+  resultEl.innerHTML = html;
+
+  // 도시 카드를 누르면 그 도시의 체크리스트로 이동
+  resultEl.querySelectorAll(".mypage-city").forEach(function (box) {
+    box.addEventListener("click", function () {
+      const city = CITY_DATA.find(function (c) {
+        return c.id === box.dataset.city;
+      });
+      cityInput.value = city.name;
+      selectCity(city);
+    });
+  });
 }
 
 // 닉네임 입력폼에서 저장 버튼을 눌렀을 때
